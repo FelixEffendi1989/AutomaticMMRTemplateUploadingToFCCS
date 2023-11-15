@@ -1,0 +1,54 @@
+Sub Config_HFM(instr_sht_name As String) 
+    sts = HypSetOption(HSV_NOACCESS_LABEL, "#Numeric Zero", "") 
+    ThisWorkbook.Sheets(instr_sht_name).Range("AA1") = sts 
+    sts = HypSetOption(HSV_SUBMITZERO, True, "") 
+    ThisWorkbook.Sheets(instr_sht_name).Range("AA2") = sts 
+End Sub 
+ 
+Sub Submit_Data(instr_sht_name As String, load_sht_name As String) 
+    ThisWorkbook.Sheets(load_sht_name).Select 
+    sts = HypSubmitData(load_sht_name) 
+    ThisWorkbook.Sheets(instr_sht_name).Range("AA3") = sts 
+End Sub 
+ 
+Sub InsertVBComponent(ByVal wb As Workbook, ByVal CompFileName As String) 
+' Inserts the content of CompFileName as a new component in workbook 
+' CompFileName must be a valid VBA component suited for import (an exported VBA component) 
+ 
+'Checking whether CompFileName file exists 
+If Dir(CompFileName) <> "" Then 
+     
+    'Ignore errors 
+    On Error Resume Next 
+     
+    'Inserts component from file 
+    wb.VBProject.VBComponents.Import CompFileName 
+     
+    On Error GoTo 0 
+End If 
+ 
+Set wb = Nothing 
+ 
+End Sub 
+ 
+ 
+Sub Calling_Procedure()	 
+    'Calling InsertVBComponent procedure 
+    InsertVBComponent ActiveWorkbook, "C:\Oracle\SmartView\bin\smartview.bas" 
+	 
+	'Calling Config_HFM procedure 
+    Config_HFM "Instr" 
+	 
+	'Calling Submit_Data procedure 
+    Submit_Data "Instr", "Load" 
+	 
+End Sub 
+ 
+Sub Calling_Procedure2()		 
+	'Calling Config_HFM procedure 
+    Config_HFM "Instr" 
+	 
+	'Calling Submit_Data procedure 
+    Submit_Data "Instr", "Load" 
+	 
+End Sub
